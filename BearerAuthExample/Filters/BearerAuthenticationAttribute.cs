@@ -42,9 +42,9 @@ namespace BearerAuthExample.Filters
                 return;
             }
 
-            var jwt = DecodeParameter(authorization.Parameter);
+            //var jwt = DecodeParameter(authorization.Parameter);
 
-            IPrincipal principal = await AuthenticateAsync(jwt, cancellationToken);
+            IPrincipal principal = await AuthenticateAsync(authorization.Parameter, cancellationToken);
 
             if (principal == null)
             {

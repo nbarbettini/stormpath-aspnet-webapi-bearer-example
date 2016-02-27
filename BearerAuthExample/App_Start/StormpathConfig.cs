@@ -1,7 +1,7 @@
-﻿using Stormpath.SDK.Api;
-using Stormpath.SDK.Client;
+﻿using Stormpath.SDK.Client;
 using Stormpath.SDK.Http;
 using Stormpath.SDK.Serialization;
+using Stormpath.SDK.Sync;
 
 namespace BearerAuthExample
 {
@@ -15,20 +15,18 @@ namespace BearerAuthExample
 
         public static void Initialize()
         {
-            var apiKey = ClientApiKeys.Builder()
-                // Replace this with your Stormpath API Key and Secret
-                // or use SetFileLocation and provide a path to apiKey.properties
-                .SetFileLocation("~\\.stormpath\\useful-catapult.apiKey.properties")
-                .Build();
-
-            // Build the IClient object and make it available on StormpathConfig.Client
-            // In a complex application, it would be better to use dependency injection to do this.
+            // Build the IClient object and make it available on StormpathConfig.Client.
+            // (In a complex application, it would be better to use dependency injection to do this,
+            // instead of a singleton/static object)
             var clientBuilder = Clients.Builder()
-                .SetApiKey(apiKey)
+                // Path to your API Key file path. You can also hardcode the API Key and Secret
+                // with .SetApiKeyId/SetApiKeySecret, but this should only be used for testing.
+                .SetApiKeyFilePath("~\\.stormpath\\useful-catapult.apiKey.properties")
                 .SetHttpClient(HttpClients.Create().RestSharpClient())
                 .SetSerializer(Serializers.Create().JsonNetSerializer());
 
             Client = clientBuilder.Build();
+            Client.GetApplication(ApplicationHref); // Prime the cache
         }
     }
 }
